@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chrome Dinosaur Game</title>
+  <style>
+    #game-container {
+      position: relative;
+      width: 600px;
+      height: 200px;
+      border: 1px solid #000;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    #dinosaur {
+      position: absolute;
+      bottom: 0;
+      left: 50px;
+      width: 50px;
+      height: 50px;
+      background-color: #000;
+    }
+    #cactus {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 20px;
+      height: 50px;
+      background-color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <div id="dinosaur"></div>
+    <div id="cactus"></div>
+  </div>
+
+  <script>
+    var dinosaur = document.getElementById('dinosaur');
+    var cactus = document.getElementById('cactus');
+    var gameContainer = document.getElementById('game-container');
+    var isJumping = false;
+
+    function jump() {
+      if (!isJumping) {
+        isJumping = true;
+        var position = 0;
+        var jumpInterval = setInterval(function() {
+          if (position === 150) {
+            clearInterval(jumpInterval);
+            var fallInterval = setInterval(function() {
+              if (position === 0) {
+                clearInterval(fallInterval);
+                isJumping = false;
+              }
+              position--;
+              dinosaur.style.bottom = position + 'px';
+            }, 10);
+          }
+          position++;
+          dinosaur.style.bottom = position + 'px';
+        }, 10);
+      }
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.code === 'Space') {
+        jump();
+      }
+    });
+
+    function moveCactus() {
+      var cactusPosition = 600;
+      var randomTime = Math.random() * 3000 + 1000;
+
+      var moveInterval = setInterval(function() {
+        if (cactusPosition < -20) {
+          clearInterval(moveInterval);
+          gameContainer.removeChild(cactus);
+        } else if (cactusPosition > 0 && cactusPosition < 50 && position < 50) {
+          clearInterval(moveInterval);
+          document.body.innerHTML = '<h1>Game Over!</h1>';
+        }
+        cactusPosition--;
+        cactus.style.right = cactusPosition + 'px';
+      }, 10);
+
+      setTimeout(moveCactus, randomTime);
+    }
+
+    moveCactus();
+  </script>
+</body>
+</html>
